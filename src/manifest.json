@@ -1,0 +1,13 @@
+{
+	"manifest_version": 1,
+	"id": "io.github.daeraxa.toggle-markup",
+	"app_min_version": "2.8",
+	"version": "1.0.0",
+	"name": "Toggle Markup Type",
+	"description": "Toggles the markup type of a selected note",
+	"author": "Daeraxa",
+	"homepage_url": "",
+	"repository_url": "https://github.com/Daeraxa/joplin-plugin-toggle-markup",
+	"keywords": [],
+	"categories": []
+}
