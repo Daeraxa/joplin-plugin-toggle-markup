@@ -8,34 +8,48 @@ joplin.plugins.register({
 			label: "Toggle the markup language type of the current note",
 			execute: async () => {
 				toggleMarkupLanguage();
-				},
+			},
 		})
-		
-		async function toggleMarkupLanguage(){				
-		
-		//Get current note and its ID	
-		const curNote = await joplin.workspace.selectedNote();
-		const noteId = await curNote.id;
-		
-		//console.info(noteId);
 
-		//const note = await joplin.data.get(['notes', noteId], { fields: ['id', 'title', 'markup_language']});
+		await joplin.commands.register({
+			name: "newNoteHtml",
+			label: "New HTML note",
+			execute: async () => {
+				newHtmlNote();
+				toggleMarkupLanguage();
+			},
+		})	
+	},
+});
+
+async function toggleMarkupLanguage(){				
+	
+	//Get current note and its ID	
+	const curNote = await joplin.workspace.selectedNote();
+	const noteId = await curNote.id;
 		
-		//console.info(await curNote.markup_language);
-		
-			
-		//check the markup_language type (1=markdown, 2=html)
-		let customMarkup: number;
-		
-		if (curNote.markup_language == 1) {
-			customMarkup = 2;
-		} else if (curNote.markup_language == 2) {
+	//check the markup_language type (1=markdown, 2=html)
+	let customMarkup: number;
+	
+	if (curNote.markup_language == 1) {
+		customMarkup = 2;
+	} else if (curNote.markup_language == 2) {
 			customMarkup = 1;
 		};
 		
-		//update markup_language
-		await joplin.data.put(['notes', noteId], null, { markup_language: customMarkup});
+	//update markup_language
+	await joplin.data.put(['notes', noteId], null, { markup_language: customMarkup });	
+};
 
+async function newHtmlNote(){
 		
-	}},
-});
+	//Get current selected folder id
+	const curFolder = await joplin.workspace.selectedFolder();
+	const folderId = await curFolder.id;
+	
+	//create new note and use its returned Id to focus it and move the cursor to the title line
+	const newNote = await joplin.data.post(['notes'], null, { title: "", parent_id: folderId, markup_language: 2 });	
+
+	await joplin.commands.execute('openNote', newNote.id);
+	await joplin.commands.execute('focusElement', 'noteTitle');
+};
